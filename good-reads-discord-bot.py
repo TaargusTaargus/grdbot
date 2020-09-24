@@ -1,6 +1,7 @@
 # good-reads-discord-bot.py
 import discord
 import os
+import test
 
 from commands import AVAILABLE_COMMANDS
 from dotenv import load_dotenv
@@ -25,6 +26,7 @@ async def on_ready():
         )
 
 
+
 @discord_client.event
 async def on_member_join( member ):
     await member.create_dm()
@@ -35,14 +37,22 @@ async def on_member_join( member ):
 
 @discord_client.event
 async def on_message( message ):
+    if message.author.bot:
+        return
+
     words = message.content.split()
     if words[ 0 ] in AVAILABLE_COMMANDS:
-        ret = AVAILABLE_COMMANDS[ words[ 0 ] ][ 'fx' ](
-            good_reads_client,
-            " ".join( words[ 1: ] )
-        )
+        try:
+            ret = AVAILABLE_COMMANDS[ words[ 0 ] ][ 'fx' ](
+                good_reads_client,
+                " ".join( words[ 1: ] )
+            )
+        except Exception as e:
+            print( e )
+            ret = AVAILABLE_COMMANDS[ words[ 0 ] ][ 'error' ]
         await message.channel.send( ret )
-        
+
+    elif words[ 0 ][ 0 ] == '\\':
+        await message.channel.send( "You talkin' about me? You talkin' about me?! Type '\help' if you were talkin' about me." )       
 
 discord_client.run( DISCORD_TOKEN )
-
