@@ -13,7 +13,7 @@ DISPLAY_NUM_ACTIVITIES = 5
 AVAILABLE_COMMANDS = {
     '\\activity': {
         'args': [ '[username]' ],
-	'description': 'Will return the most recent activity for the given user.',
+	'description': 'Will return the most recent GoodReads activity for the given user.',
         'error': ACTIVITY_COMMAND_ERROR,
         'fx': lambda good_reads_client, text: activity_command( good_reads_client, text )
     },
@@ -37,13 +37,13 @@ AVAILABLE_COMMANDS = {
     },
     '\\rating': {
         'args': [ '[book-id]', '[book-name]' ],
-        'description': 'Will return the rating for the book with author and title.',
+        'description': 'Will return the GoodReads rating for the book with author and title.',
         'error': RATING_COMMAND_ERROR,
         'fx': lambda good_reads_client, text: rating_command( good_reads_client, text )
     },
     '\\review': {
         'args': [ '[username] [book-id]', '[username] [book-name]' ],
-        'description': 'Will return most recent review from user.',
+        'description': 'Will return most recent GoodReads review from user.',
         'error': REVIEW_COMMAND_ERROR,
         'fx': lambda good_reads_client, text: review_command( good_reads_client, text )
     }
@@ -61,6 +61,20 @@ QUOTES = [
     'Time is dollars.'
 ]
 
+class CommandQueue:
+
+    API_INTERVAL = 1000
+
+    def __init__( self ):
+        self.run_queue = []
+
+    def add_command( self, command, args ):
+        self.run_queue.append( ( command, args ) )
+
+    
+5
+    
+    
 
 def activity_command( good_reads_client, user_key ):
     updates = resolve_user_activity( good_reads_client, user_key )
@@ -72,7 +86,7 @@ def activity_command( good_reads_client, user_key ):
             author = update[ 'object' ][ 'book' ][ 'authors' ][ 'author' ][ 'name' ]
             rating = update[ 'action' ][ 'rating' ]
             title = update[ 'object' ][ 'book' ][ 'title' ]
-            text = text + f'\n{n}. {user_key} gave {title} by {author}: {rating} / 5 stars.' 
+            text = text + f'\n{n}. {user_key} gave {title} by {author} a rating on GoodReads of: {rating} / 5 stars.' 
         elif update[ '@type' ] == 'readstatus':
             author = update[ 'object' ][ 'read_status' ][ 'review' ][ 'book' ][ 'author' ][ 'name' ]
             title = update[ 'object' ][ 'read_status' ][ 'review' ][ 'book' ][ 'title' ]
@@ -83,7 +97,7 @@ def activity_command( good_reads_client, user_key ):
 def book_command( good_reads_client, text ):
     book = resolve_book( good_reads_client, text )
     if book:
-        return f'{book.title} by {book.authors[ 0 ].name} has an average rating of {book.average_rating} / 5 stars.'
+        return f'{book.title} by {book.authors[ 0 ].name} has an average rating on GoodReads of {book.average_rating} / 5 stars.'
     else:
         return BOOK_COMMAND_ERROR
 
@@ -95,7 +109,7 @@ def quote_command():
 def rating_command( good_reads_client, text ):
     book = resolve_book( good_reads_client, text )
     if book:
-        return f'{book.title} by {book.authors[ 0 ].name} has an average rating of {book.average_rating} / 5 stars.'
+        return f'{book.title} by {book.authors[ 0 ].name} has an average rating on GoodReads of {book.average_rating} / 5 stars.'
     else:
         return RATING_COMMAND_ERROR
 
@@ -112,9 +126,9 @@ def review_command( good_reads_client, text ):
         )
         rev = review.GoodreadsReview( resp[ 'review' ] )
         body = rev.body[ : rev.body.rfind( '.' ) + 1 ] if rev.body else None
-        return ( f'{user.user_name} gave {book.title} by {book.authors[ 0 ].name} {rev.rating} / 5 stars.\n{user.user_name} wrote (might be cut-off): "{body}"'
+        return ( f'{user.user_name} gave {book.title} by {book.authors[ 0 ].name} {rev.rating} / 5 stars on GoodReads.\n{user.user_name} wrote (might be cut-off): "{body}"'
                         if body else
-               f'{user.user_name} gave {book.title} by {book.authors[ 0 ].name} {rev.rating} / 5 stars.' )
+               f'{user.user_name} gave {book.title} by {book.authors[ 0 ].name} {rev.rating} / 5 stars on Goodreads.' )
     except:
         return REVIEW_COMMAND_ERROR
 
