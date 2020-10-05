@@ -1,6 +1,4 @@
-from commands import activity_command
-
-def run_activity_command_test( good_reads_client ):
+def run_activity_command_test( channel, command_q ):
     text = 'jkno21892'
-    activity_command( good_reads_client, text )
+    command_q.activity_command( channel, text )
     
