@@ -21,5 +21,11 @@ def resolve_user_activity( good_reads_client, user_key ):
     response = good_reads_client.request( 
         '/user/show.xml',
         { 'id': user.gid }
-    )
-    return response[ 'user' ][ 'updates' ][ 'update' ] if 'update' in response[ 'user' ][ 'updates' ] else None
+    )[ 'user' ][ 'updates' ]
+    if 'update' in response:
+        if '@type' in response[ 'update' ]:
+            return [ response[ 'update' ] ]
+        else:
+            return response[ 'update' ]
+    else:
+            None

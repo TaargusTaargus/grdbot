@@ -74,11 +74,7 @@ def activity_command( channel, good_reads_client, user_key ):
     total_n = min( len( updates ), DISPLAY_NUM_ACTIVITIES )
     text = f'Here are the latest updates from {user_key} on GoodReads:' if len( updates ) else f'This user has no activity yet.'
     for n in range( 1, total_n + 1 ):
-        if '@type' in updates:
-            update = updates
-        else:
-            update = updates[ n - 1 ]
-            
+        update = updates[ n - 1 ]    
         if update[ '@type' ] == 'review':
             author = update[ 'object' ][ 'book' ][ 'authors' ][ 'author' ][ 'name' ]
             rating = update[ 'action' ][ 'rating' ]
