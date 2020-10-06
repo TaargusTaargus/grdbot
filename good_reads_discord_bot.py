@@ -6,6 +6,7 @@ import test
 from commands import COMMANDS, CommandQueue, start_follow_manager
 from dotenv import load_dotenv
 from goodreads import client
+from sys import argv
 
 load_dotenv()
 
@@ -13,10 +14,10 @@ DISCORD_TOKEN = os.getenv( 'DISCORD_TOKEN' )
 GOOD_READS_KEY = os.getenv( 'GOOD_READS_KEY' )
 GOOD_READS_SECRET = os.getenv( 'GOOD_READS_SECRET' )
 
-discord_client = discord.Client()
 good_reads_client = client.GoodreadsClient( GOOD_READS_KEY, GOOD_READS_SECRET )
-command_q = CommandQueue( good_reads_client )
 
+command_q = CommandQueue( good_reads_client )
+discord_client = discord.Client()
 
 @discord_client.event
 async def on_ready():

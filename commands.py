@@ -1,8 +1,11 @@
+from asyncio import sleep
 from goodreads import review
 from good_reads_follower import FollowManager
-from good_reads_utilities import resolve_book, resolve_user, resolve_user_activity
+from good_reads_utilities import resolve_book, resolve_user, resolve_user_activity, resolve_update_message
 from random import choice
-from time import sleep
+
+
+import test
 
 ACTIVITY_COMMAND_ERROR = f'Was unable to retrieve most recent user activity.'
 BOOK_COMMAND_ERROR = f'Was unable to find a matching book.'
@@ -10,8 +13,6 @@ FOLLOW_COMMAND_ERROR = f'Was unable to follow specified user.'
 QUOTE_COMMAND_ERROR = f'All out of quotes.'
 RATING_COMMAND_ERROR = f'Unable to fetch rating for this book.'
 REVIEW_COMMAND_ERROR = f'Unable to find a review.'
-
-DATE_TIME_FORMAT = '%a, %d %b %Y %H:%M:%S %z'
 
 DISPLAY_NUM_ACTIVITIES = 5
 
@@ -53,9 +54,10 @@ class CommandQueue:
         #except Exception as e:
             #print( e )
             #ret = command[ 'error' ]
-        await channel.send( ret )
+        if ret:
+            await channel.send( ret )
 
-        sleep( self.API_INTERVAL )
+        await sleep( self.API_INTERVAL )
 
         if len( self.run_queue ):
             await self.run_command( *self.run_queue.pop( 0 ) )
@@ -75,18 +77,7 @@ def activity_command( channel, good_reads_client, user_key ):
     text = f'Here are the latest updates from {user_key} on GoodReads:' if len( updates ) else f'This user has no activity yet.'
     for n in range( 1, total_n + 1 ):
         update = updates[ n - 1 ]    
-        if update[ '@type' ] == 'review':
-            author = update[ 'object' ][ 'book' ][ 'authors' ][ 'author' ][ 'name' ]
-            rating = update[ 'action' ][ 'rating' ]
-            title = update[ 'object' ][ 'book' ][ 'title' ]
-            text = text + f'\n{n}. {user_key} gave {title} by {author} a rating of: {rating} / 5 stars.' 
-        elif update[ '@type' ] == 'readstatus':
-            author = update[ 'object' ][ 'read_status' ][ 'review' ][ 'book' ][ 'author' ][ 'name' ]
-            title = update[ 'object' ][ 'read_status' ][ 'review' ][ 'book' ][ 'title' ]
-            text = text + f'\n{n}. {user_key} wants to read {title} by {author}.'
-        else:
-            utype = update[ '@type' ]
-            text = text + f'\n{n}. {user_key} posted a {utype}.'
+        text = text + f'\n{n}. ' + resolve_update_message( user_key, update )
             
     return text
 
@@ -147,7 +138,8 @@ COMMANDS = {
         'args': [ '[username]' ],
         'description': 'Will return the most recent GoodReads activity for the given user.',
         'error': ACTIVITY_COMMAND_ERROR,
-        'fx': activity_command
+        'fx': activity_command,
+        'test': test.run_activity_command_test
     },
     '\\book': {
         'args': [ '[book-id]', '[book-name]' ],
