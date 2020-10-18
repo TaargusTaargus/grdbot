@@ -1,3 +1,5 @@
+from discord import Embed
+
 def resolve_book( good_reads_client, book_key ):
     book = None
     try:
@@ -30,19 +32,25 @@ def resolve_user_activity( good_reads_client, user_key ):
     else:
             None
 
-def resolve_update_message( user_key, update ):
+def resolve_update_embed( user_key, update ):
+    embed = Embed()
+    embed.url = update[ 'link' ]
+    embed.set_image( url = update[ 'image_url' ] )
+    embed.set_footer( text = 'Posted on: ' + update[ 'updated_at' ]  )
     if update[ '@type' ] == 'review':
         author = update[ 'object' ][ 'book' ][ 'authors' ][ 'author' ][ 'name' ]
+        body = update[ 'body' ] + ( '' if update[ 'body' ].strip()[ -1 ] in '.!?' else '...' ) if 'body' in update else None
         rating = update[ 'action' ][ 'rating' ]
         title = update[ 'object' ][ 'book' ][ 'title' ]
-        text = f'GoodReads user {user_key} gave {title} by {author} a rating of: {rating} / 5 stars.' 
+        embed.title = f"{user_key}'s review of {title} by {author}"
+        embed.description =  f'{rating}/5' + ( f': {body}' if body else '' )
     elif update[ '@type' ] == 'readstatus':
         author = update[ 'object' ][ 'read_status' ][ 'review' ][ 'book' ][ 'author' ][ 'name' ]
         title = update[ 'object' ][ 'read_status' ][ 'review' ][ 'book' ][ 'title' ]
-        text = f'GoodReads user {user_key} wants to read {title} by {author}.'
+        embed.description = f'{user_key} wants to read {title} by {author}'
     else:
         utype = update[ '@type' ]
-        text = f'GoodReads user {user_key} posted a {utype}.'
-    return text
+        embed.description = f'GoodReads user {user_key} posted a {utype}'
+    return embed 
 
 
