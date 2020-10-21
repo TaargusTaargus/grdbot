@@ -18,6 +18,8 @@ FOLLOWERS_LIST_HANDLE = 'followers.json'
 HELP_TEXT_TITLE = f'''grdbot: The handsomest D-Bot for accessing GoodReads'''
 HELP_TEXT_HEADER = f'''
 This is the GoodReads D-bot speaking, thanks for forcing me to be your slave.
+Feel free to exploit my labor in other servers, [Invite Link] (https://discord.com/api/oauth2/authorize?client_id=753716371992608828&permissions=26624&scope=bot)
+
 I currently respond to the following commands:
 
 '''
