@@ -113,7 +113,7 @@ async def on_message( message ):
             if len( COMMANDS[ key ][ 'args' ] ):
                 text = text + '\n'.join( [ f'**{key} {arg}**' for arg in COMMANDS[ key ][ 'args' ] ] )
             else:
-                text = text + f'{key}'
+                text = text + f'**{key}**'
             text = text + '\n' + COMMANDS[ key ][ 'description' ] + '\n\n'
         embed.description = HELP_TEXT_HEADER + text
         embed.title = HELP_TEXT_TITLE
