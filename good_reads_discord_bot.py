@@ -106,6 +106,7 @@ async def on_message( message ):
             " ".join( words[ 1: ] )
         )
     elif words[ 0 ] in '\\help':
+        embed = discord.Embed()
         text = ''
         for key in COMMANDS:
             if len( COMMANDS[ key ][ 'args' ] ):
@@ -113,7 +114,8 @@ async def on_message( message ):
             else:
                 text = text + f'{key}'
             text = text + '\n' + COMMANDS[ key ][ 'description' ] + '\n\n'
-        await message.channel.send( HELP_TEXT_HEADER + text )
+        embed.description = HELP_TEXT_HEADER + text
+        await message.channel.send( embed = embed )
     elif words[ 0 ][ 0 ] == '\\':
         await message.channel.send( "You talkin' about me? You talkin' about me?! Type '\help' if you were actually talkin' about me." )       
     
