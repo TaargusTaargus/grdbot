@@ -15,6 +15,7 @@ DISCORD_TOKEN = os.getenv( 'DISCORD_TOKEN' )
 GOOD_READS_KEY = os.getenv( 'GOOD_READS_KEY' )
 GOOD_READS_SECRET = os.getenv( 'GOOD_READS_SECRET' )
 FOLLOWERS_LIST_HANDLE = 'followers.json'
+HELP_TEXT_TITLE = f'''grdbot: The handsomest D-Bot for accessing GoodReads'''
 HELP_TEXT_HEADER = f'''
 This is the GoodReads D-bot speaking, thanks for forcing me to be your slave.
 I currently respond to the following commands:
@@ -110,11 +111,12 @@ async def on_message( message ):
         text = ''
         for key in COMMANDS:
             if len( COMMANDS[ key ][ 'args' ] ):
-                text = text + '\n'.join( [ f'{key} {arg}' for arg in COMMANDS[ key ][ 'args' ] ] )
+                text = text + '\n'.join( [ f'**{key} {arg}**' for arg in COMMANDS[ key ][ 'args' ] ] )
             else:
                 text = text + f'{key}'
             text = text + '\n' + COMMANDS[ key ][ 'description' ] + '\n\n'
         embed.description = HELP_TEXT_HEADER + text
+        embed.title = HELP_TEXT_TITLE
         await message.channel.send( embed = embed )
     elif words[ 0 ][ 0 ] == '\\':
         await message.channel.send( "You talkin' about me? You talkin' about me?! Type '\help' if you were actually talkin' about me." )       
