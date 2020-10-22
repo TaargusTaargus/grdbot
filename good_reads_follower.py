@@ -60,7 +60,6 @@ class FollowManager:
         for update in resolve_user_activity( good_reads_client, user_key ):
             ts = datetime.fromtimestamp( datetime.strptime( update[ 'updated_at' ], DATE_TIME_FORMAT ).timestamp(), tz=timezone.utc ).timestamp()
             if self.follow_list[ key ][ 'last_update' ] < ts:
-                await channel.send( f'GoodReads user {user_key} posted the following update:' )
                 await channel.send( embed = resolve_update_embed( user_key, update ) )
             if latest < ts:
                 latest = ts

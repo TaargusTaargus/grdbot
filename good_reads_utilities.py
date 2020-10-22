@@ -36,7 +36,7 @@ def resolve_update_embed( user_key, update ):
     embed = Embed()
     embed.url = update[ 'link' ]
     embed.set_image( url = update[ 'image_url' ] )
-    embed.set_footer( text = 'Posted on: ' + update[ 'updated_at' ]  )
+    embed.set_footer( text = 'Posted on GoodReads at: ' + update[ 'updated_at' ]  )
     if update[ '@type' ] == 'review':
         author = update[ 'object' ][ 'book' ][ 'authors' ][ 'author' ][ 'name' ]
         body = update[ 'body' ] + ( '' if update[ 'body' ].strip()[ -1 ] in '.!?' else '...' ) if 'body' in update else None
@@ -47,7 +47,7 @@ def resolve_update_embed( user_key, update ):
     elif update[ '@type' ] == 'readstatus':
         author = update[ 'object' ][ 'read_status' ][ 'review' ][ 'book' ][ 'author' ][ 'name' ]
         title = update[ 'object' ][ 'read_status' ][ 'review' ][ 'book' ][ 'title' ]
-        embed.description = f'{user_key} wants to read {title} by {author}'
+        embed.title = f'{user_key} wants to read {title} by {author}'
     else:
         utype = update[ '@type' ]
         embed.description = f'GoodReads user {user_key} posted a {utype}'
