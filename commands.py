@@ -27,7 +27,7 @@ class CommandQueue:
 
     API_INTERVAL = 2
     
-    def __init__( self, good_reads_client  ):
+    def __init__( self, good_reads_client ):
         self.good_reads_client = good_reads_client
         self.run_queue = []
         self.waiting = False
@@ -43,12 +43,8 @@ class CommandQueue:
     async def run_command( self, channel, command, input_text ):
         self.waiting = True
         
-        #try:
+        print( command[ 'name' ] + " " + input_text )
         await command[ 'fx' ]( channel, self.good_reads_client, input_text )
-        #except Exception as e:
-            #print( e )
-            #ret = command[ 'error' ]
-
         await sleep( self.API_INTERVAL )
 
         if len( self.run_queue ):
@@ -95,7 +91,7 @@ async def review_command( channel, good_reads_client, text ):
     try:
         resp = user._client.request(
             "/review/show_by_user_and_book.xml",
-            {'user_id': user.gid, 'book_id': book.gid }
+            { 'user_id': user.gid, 'book_id': book.gid }
         )
         embed = Embed()
         rev = review.GoodreadsReview( resp[ 'review' ] )

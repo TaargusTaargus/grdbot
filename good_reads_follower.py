@@ -6,7 +6,7 @@ DATE_TIME_FORMAT = '%a, %d %b %Y %H:%M:%S %z'
 
 class FollowManager:
 
-    FOLLOW_INTERVAL = 5
+    FOLLOW_INTERVAL = 60
 
     def __init__( self ):
         self.follow_list = {}
@@ -31,10 +31,10 @@ class FollowManager:
         self.__load_followers_list__( file_path )
         self.scanning = True
         while self.scanning:
-            for entry in self.follow_list:
+            for entry in list( self.follow_list ):
                 await command_q.run_command(
                     channels[ self.follow_list[ entry ][ 'channel_id' ] ],
-                    { 'fx': self.follow_updated_command },
+                    { 'fx': self.follow_updated_command, 'name': 'follow_update' },
                     self.follow_list[ entry ][ 'user_id' ]
                 )
 

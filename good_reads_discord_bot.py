@@ -14,7 +14,7 @@ load_dotenv()
 DISCORD_TOKEN = os.getenv( 'DISCORD_TOKEN' )
 GOOD_READS_KEY = os.getenv( 'GOOD_READS_KEY' )
 GOOD_READS_SECRET = os.getenv( 'GOOD_READS_SECRET' )
-FOLLOWERS_LIST_HANDLE = 'followers.json'
+FOLLOWERS_LIST_HANDLE = os.getenv( 'FOLLOWERS_LIST_HANDLE' )
 HELP_TEXT_TITLE = f'''grdbot: The handsomest D-Bot for accessing GoodReads'''
 HELP_TEXT_HEADER = f'''
 This is the GoodReads D-bot speaking, thanks for forcing me to be your slave.
@@ -36,37 +36,43 @@ COMMANDS = {
         'description': 'Will return the most recent GoodReads activity for the given user.',
         'error': commands.ACTIVITY_COMMAND_ERROR,
         'fx': commands.activity_command,
+        'name': 'activity',
         'test': test.run_activity_command_test
     },
     '\\book': {
         'args': [ '[book-id]', '[book-name]' ],
         'description': 'Will return book title, author, and description based on id or book name from the GoodReads website.',
         'error': commands.BOOK_COMMAND_ERROR,
-        'fx': commands.book_command
+        'fx': commands.book_command,
+        'name': 'book'
     },
     '\\follow': {
         'args': [ '[username]', '[user-id]' ],
         'description': 'Will follow the specified user and provide updates as they appear on the GoodReads website.',
         'error': commands.FOLLOW_COMMAND_ERROR,
-        'fx': follow_manager.follow_command
+        'fx': follow_manager.follow_command,
+        'name': 'follow'
     },
     '\\quote': {
         'args': [],
         'description': 'Will return an inspiring quote.',
         'error': commands.QUOTE_COMMAND_ERROR,
-        'fx': commands.quote_command
+        'fx': commands.quote_command,
+        'name': 'quote'
     },
     '\\rating': {
         'args': [ '[book-id]', '[book-name]' ],
         'description': 'Will return the GoodReads rating for the book with author and title.',
         'error': commands.RATING_COMMAND_ERROR,
-        'fx': commands.rating_command
+        'fx': commands.rating_command,
+        'name': 'rating'
     },
     '\\review': {
         'args': [ '[username] [book-id]', '[username] [book-name]' ],
         'description': 'Will return the specified GoodReads review from user.',
         'error': commands.REVIEW_COMMAND_ERROR,
-        'fx': commands.review_command
+        'fx': commands.review_command,
+        'name': 'review'
     }
 }
 
